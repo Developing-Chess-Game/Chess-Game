@@ -37,12 +37,32 @@ def main():
     p.display.set_icon(ICON) #setting the icon
     gs = ch.GameState() #getting the acces to the GameState class 
     loadImg() #we need to call this once
+    sqSelected = () #this will store the mouse location(x, y)
+    pClicks = [] #this will be our player clicks, it will store 2 tuples: [(4, 4), (5, 3)] 
 
     while True: #this will execute the game
         for event in p.event.get(): #we need to access to pygame.event
             if event.type == p.QUIT: #this means user click the close icon
                 p.quit()
                 sys.exit()
+            #mouse event
+            elif event.type == p.MOUSEBUTTONDOWN:
+                pos = p.mouse.get_pos() #getting the mouse position
+                col = pos[0] // SQ_SIZE #this is the column position
+                row = pos[1] // SQ_SIZE #this is the row position where the mouse is located
+
+                #if the user click 2 times on the piece's position we want to deselect
+                if sqSelected == (row, col): #this means the user clicked two times in the same piece
+                    sqSelected = () #reset the user clicks
+                    pClicks = []
+                else: #if the user doesn't click two times on the piece
+                    sqSelected = (row, col)
+                    pClicks.append(sqSelected)
+                
+                #we want to move the piece to the second location
+                if len(pClicks) == 2: #this means that we most make the move
+                    pass
+
         graphicInterface(screen, gs)      
         p.display.update()
 
