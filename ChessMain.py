@@ -61,7 +61,13 @@ def main():
                 
                 #we want to move the piece to the second location
                 if len(pClicks) == 2: #this means that we most make the move
-                    pass
+                    startSq = pClicks[0] #the first click
+                    endSq = pClicks[1] #the second click
+                    move = ch.Move(startSq, endSq, gs.board) #creating a move Object to store the information of the user clicks
+                    gs.makeMove(move) #making the moves
+
+                    sqSelected = () #resets the user clicks
+                    pClicks = []
 
         graphicInterface(screen, gs)      
         p.display.update()
