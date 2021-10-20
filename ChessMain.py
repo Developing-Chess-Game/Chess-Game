@@ -7,7 +7,7 @@ import ChessEngine as ch
 
 WIDTH, HEIGHT = 640, 640
 DIMENTION = 8 #the board is 8x8
-SQ_SIZE = DIMENTION // HEIGHT
+SQ_SIZE = HEIGHT // DIMENTION
 ICON = p.image.load("icon.ico")
 MAX_FPS = 15
 IMAGES = {}
@@ -42,6 +42,33 @@ def main():
         for event in p.event.get(): #we need to access to pygame.event
             if event.type == p.QUIT: #this means user click the close icon
                 p.quit()
-                sys.exit()      
+                sys.exit()
+        graphicInterface(screen, gs)      
         p.display.update()
+
+"""
+This method display all the graphics on the screen
+"""
+def graphicInterface(screen, gs):
+    drawBoard(screen) #this draws the grid of squares on the screen
+    drawPieces(screen, gs.board) #this draw the pieces on the top of those squares
+
+#THIS METHOD DRAW THE GRID
+def drawBoard(screen):
+    #we need two colors on our board, let's store those in a list
+    colors = [p.Color("gray"), p.Color(120, 120, 120)]
+    for r in range(DIMENTION): #the rows
+        for c in range(DIMENTION): #the columns
+            color = colors[(r+c)%2] #this helps us to select the right color
+            p.draw.rect(screen, color, p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE))
+
+#THIS METHOD DISPLAYS ALL THE PIECES
+def drawPieces(screen, board):
+    for r in range(DIMENTION): #rows
+        for c in range(DIMENTION): #columns
+            piece = board[r][c] #we access to each piece in our 2d list
+            if piece != "--": #every time that it's not a empty square
+                #display the image in the screen
+                screen.blit(IMAGES[piece], p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE)) 
+
 main()
