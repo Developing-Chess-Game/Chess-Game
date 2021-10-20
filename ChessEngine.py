@@ -24,7 +24,13 @@ class GameState():
         
         self.whiteToMove = True
         self.moveLog = []
-
+    
+    #THIS METHOD WILL DO THE MOVE VISIBLE IN THE SCREEN
+    def makeMove(self, move):
+        self.board[move.startRow][move.startCol] = "--" #the start move will be an empty square because the piece is moved
+        self.board[move.endRow][move.endCol] = move.pieceMoved #we need to display the image in the new location
+        self.moveLog.append(move) #we will use this movelog to keep track of all the move
+        self.whiteToMove = not self.whiteToMove #switch turn between players
 
 """
 This class is used to store information about the moves
