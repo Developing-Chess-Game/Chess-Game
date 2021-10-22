@@ -22,6 +22,10 @@ class GameState():
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
         
+        #Dictionary to create a data structure with all the pieces' methods
+        self.moveMethods = {
+            "R": self.rookMoves, "N": self.knightMoves, "B": self.bishopMoves,
+            "Q": self.queenMoves, "K": self.kingMoves, "P": self.pawnMoves}
         self.whiteToMove = True
         self.moveLog = []
     
@@ -39,6 +43,51 @@ class GameState():
             self.board[move.startRow][move.startCol] = move.pieceMoved #setting the start Square to how it was before the move
             self.board[move.endRow][move.endCol] = move.pieceCaptured #setting end square to how it was before the move
             self.whiteToMove = not self.whiteToMove #switch the player's turn
+    
+    #THIS WILL GET ALL THE VALID MOVES WITH CHECK(THE KING)
+    def validMove(self):
+        return self.allPosiblesMoves() #Generating all the posibles moves
+    
+    #THIS WILL GET ALL POSIBLES MOVE WITHOUT CHECK THE KING
+    def allPosiblesMoves(self):
+        moves = [] #It stores the posibles moves
+        for r in range(self.board): #All the rows in the board
+            for c in range(self.board[r]): #All the columns in the board
+                piece_color = self.board[r][c][0] #This is gonna be equal to the first caracter of each element
+                if (piece_color == "w" and self.whiteToMove) or (piece_color == "b" and not self.whiteToMove):
+                    piece = self.board[r][c][1] #This obtain the piece type
+                    self.moveMethods[piece](r, c, moves) #Calling the moveMethods
+        return moves #We return the list of posibles moves
+    
+    #THIS GETS THE POSIBLES MOVES TO --PAWN-- PIECE
+    def pawnMoves(self, r, c, moves):
+        pass
+
+
+    #THIS GETS THE POSIBLES MOVES TO --ROOK-- PIECE
+    def rookMoves(self, r, c, moves):
+        pass
+
+
+    #THIS GETS THE POSIBLES MOVES TO --BISHOP-- PIECE
+    def bishopMoves(self, r, c, moves):
+        pass
+
+
+    #THIS GETS THE POSIBLES MOVES TO --QUEEN-- PIECE
+    def queenMoves(self, r, c, moves):
+        pass
+
+
+    #THIS GETS THE POSIBLES MOVES TO --KNIGHT-- PIECES
+    def knightMoves(self, r, c, moves):
+        pass
+
+
+    #THIS GETS THE POSIBLES MOVES TO --KING-- PIECE
+    def kingMoves(self, r, c, moves):
+        pass
+
 
 """
 This class is used to store information about the moves
