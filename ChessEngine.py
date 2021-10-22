@@ -45,14 +45,14 @@ class GameState():
             self.whiteToMove = not self.whiteToMove #switch the player's turn
     
     #THIS WILL GET ALL THE VALID MOVES WITH CHECK(THE KING)
-    def validMove(self):
+    def validMoves(self):
         return self.allPosiblesMoves() #Generating all the posibles moves
     
     #THIS WILL GET ALL POSIBLES MOVE WITHOUT CHECK THE KING
     def allPosiblesMoves(self):
         moves = [] #It stores the posibles moves
-        for r in range(self.board): #All the rows in the board
-            for c in range(self.board[r]): #All the columns in the board
+        for r in range(len(self.board)): #All the rows in the board
+            for c in range(len(self.board[r])): #All the columns in the board
                 piece_color = self.board[r][c][0] #This is gonna be equal to the first caracter of each element
                 if (piece_color == "w" and self.whiteToMove) or (piece_color == "b" and not self.whiteToMove):
                     piece = self.board[r][c][1] #This obtain the piece type
@@ -107,18 +107,29 @@ class Move():
     colsToFiles = {v: k for k, v in filesToCols.items()}
 
     def __init__(self, startSq, endSq, board):
+        #Start square
         self.startRow = startSq[0]
         self.startCol = startSq[1]
+
+        #End square
         self.endRow = endSq[0]
         self.endCol = endSq[1]
-        #this variables keep tracks of what piece have been moved, and the capture of what the pieces new
-        #location is
-        self.pieceMoved = board[self.startRow][self.startCol]
-        self.pieceCaptured = board[self.endRow][self.endCol]
+
+        self.pieceMoved = board[self.startRow][self.startCol] #this keep track of what piece was moved
+        self.pieceCaptured = board[self.endRow][self.endCol] #this captured the piece that was in the last square
+        self.ID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol #we need this to compare 2 moves
     
     #THIS METHOD GET THE CHESS NOTATION OF THE FIRST POSITION AND THE LAST POSITION AND RETURN THE STRING
     def getChessNotation(self):
         return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
+    
+    #We need to do this because we are not allow to compare 2 objects
+    #OVERRIDING THE EQUAL OPERATOR
+    def __eq__(self, o):
+        if isinstance(o, Move): #we need to check if it's instance of an move object
+            return (self.ID == o.ID) #Comparing the ID to know if they are the same
+        return False
+
     
     #THIS METHOD GET THE CHESS NOTATION BUT JUST OF ONE POSTITION AND RETURN THE STRING
     def getRankFile(self, r, c):

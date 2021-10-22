@@ -37,6 +37,9 @@ def main():
     p.display.set_caption("--Chess Game--") #the text that appears at the top of the screen
     p.display.set_icon(ICON) #setting the icon
     gs = ch.GameState() #getting the acces to the GameState class 
+    validMoves = gs.validMoves() #we need to get the list of valid moves
+    madeMove = False #the validMove() method is too expensive, we won't call it every frame
+
     loadImg() #we need to call this once
     sqSelected = () #this will store the mouse location(x, y)
     pClicks = [] #this will be our player clicks, it will store 2 tuples: [(4, 4), (5, 3)] 
@@ -65,7 +68,9 @@ def main():
                     startSq = pClicks[0] #the first click
                     endSq = pClicks[1] #the second click
                     move = ch.Move(startSq, endSq, gs.board) #creating a move Object to store the information of the user clicks
-                    gs.makeMove(move) #making the moves
+                    if move in validMoves: #if the move is in the validMoves list, so do the move
+                        gs.makeMove(move) #making the moves
+                        madeMove = True
 
                     sqSelected = () #resets the user clicks
                     pClicks = []
@@ -73,7 +78,13 @@ def main():
             if event.type == p.KEYDOWN: #if the user press a key
                 if event.key == p.K_f: #if the key is equal to F
                     gs.undoMove() #undo the last move
-                    
+                    madeMove = True
+        
+        #every time we do a move, we need to updated the validMove with the current validMoves list
+        #because it changes
+        if madeMove:
+            validMove = gs.validMoves()
+            madeMove = False        
         clock.tick(MAX_FPS)
         graphicInterface(screen, gs)      
         p.display.update()
