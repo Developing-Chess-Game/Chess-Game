@@ -31,6 +31,7 @@ Game state(our game board).
 """
 def main():
     p.init() #we need to initialize pygame by calling the init method
+    clock = p.time.Clock()
     screen = p.display.set_mode((WIDTH, HEIGHT)) #setting the width and height of the screen
     screen.fill("white") #setting the back ground to white
     p.display.set_caption("--Chess Game--") #the text that appears at the top of the screen
@@ -68,7 +69,12 @@ def main():
 
                     sqSelected = () #resets the user clicks
                     pClicks = []
-
+            #Handle the key pressed
+            if event.type == p.KEYDOWN: #if the user press a key
+                if event.key == p.K_f: #if the key is equal to F
+                    gs.undoMove() #undo the last move
+                    
+        clock.tick(MAX_FPS)
         graphicInterface(screen, gs)      
         p.display.update()
 

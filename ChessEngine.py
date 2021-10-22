@@ -31,6 +31,14 @@ class GameState():
         self.board[move.endRow][move.endCol] = move.pieceMoved #we need to display the image in the new location
         self.moveLog.append(move) #we will use this movelog to keep track of all the move
         self.whiteToMove = not self.whiteToMove #switch turn between players
+    
+    #THIS METHOD WILL UNDO THE LAST MOVE
+    def undoMove(self):
+        if len(self.moveLog) != 0: #checking if there is at least one move to undo.
+            move = self.moveLog.pop() #we removed the last move and assign it to the <move> variable
+            self.board[move.startRow][move.startCol] = move.pieceMoved #setting the start Square to how it was before the move
+            self.board[move.endRow][move.endCol] = move.pieceCaptured #setting end square to how it was before the move
+            self.whiteToMove = not self.whiteToMove #switch the player's turn
 
 """
 This class is used to store information about the moves
