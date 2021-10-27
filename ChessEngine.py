@@ -145,10 +145,19 @@ class GameState():
         self.rookMoves(r, c, moves) #getting the rook moves
         self.bishopMoves(r, c, moves) #getting the bishop moves
 
+
     #THIS GETS THE POSIBLES MOVES TO --KNIGHT-- PIECES
     def knightMoves(self, r, c, moves):
-        pass
-
+        #the Knight can moves in whatever direction but doing an L move
+        knightMoves = ((-2, -1), (-2, 1), (-1, 2), (1, 2), (1, -2), (-1, -2), (2, -1), (2, 1)) 
+        friendsColor = "w" if self.whiteToMove else "b" #the friends color
+        for m in knightMoves: #getting all the move direction of the knight
+            endRow = r + m[0] #the end rows
+            endCol = c + m[1] #the end column
+            if 0 <= endRow < 8 and 0 <= endCol < 8:#Checking our board's edges
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != friendsColor: #it means that every move that is an empty or enemy piece will be a valid move
+                    moves.append(Move((r, c), (endRow, endCol), self.board))
 
     #THIS GETS THE POSIBLES MOVES TO --KING-- PIECE
     def kingMoves(self, r, c, moves):
