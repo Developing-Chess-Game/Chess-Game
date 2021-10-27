@@ -141,8 +141,9 @@ class GameState():
 
     #THIS GETS THE POSIBLES MOVES TO --QUEEN-- PIECE
     def queenMoves(self, r, c, moves):
-        pass
-
+        #The queen is a combination of rook and bishop moves
+        self.rookMoves(r, c, moves) #getting the rook moves
+        self.bishopMoves(r, c, moves) #getting the bishop moves
 
     #THIS GETS THE POSIBLES MOVES TO --KNIGHT-- PIECES
     def knightMoves(self, r, c, moves):
