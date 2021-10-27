@@ -96,7 +96,23 @@ class GameState():
 
     #THIS GETS THE POSIBLES MOVES TO --ROOK-- PIECE
     def rookMoves(self, r, c, moves):
-        pass
+        move_dir = ((-1, 0), (0, -1), (1, 0), (0, 1)) #up, left, down, right
+        eColor = "b" if self.whiteToMove else "w" #enemy color
+        for d in move_dir: #getting all the move direction
+            for i in range(1, 8): 
+                endRow = r + d[0] * i #getting the row position of the last square
+                endCol = c + d[1] * i #getting the col position of the last square
+                if 0 <= endRow < 8 and 0 <= endCol < 8: #Checking our board's edges
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--": #empty sq is a valid move
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                    elif endPiece[0] == eColor: #enemy piece is a valid move
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                        break #we want to stop our adding moves once we find a enemy piece along the way
+                    else: #frienly piece is not a valid move
+                        break
+                else: #endRow and endCol are out the board
+                    break
 
 
     #THIS GETS THE POSIBLES MOVES TO --BISHOP-- PIECE
