@@ -71,19 +71,22 @@ def main():
                     if move in validMoves: #if the move is in the validMoves list, so do the move
                         gs.makeMove(move) #making the moves
                         madeMove = True
-
-                    sqSelected = () #resets the user clicks
-                    pClicks = []
+                        sqSelected = () #resets the user clicks
+                        pClicks = []
+                    else: #if it's not a valid moves, we want to have the last square selected
+                        pClicks = [sqSelected]
             #Handle the key pressed
             if event.type == p.KEYDOWN: #if the user press a key
                 if event.key == p.K_f: #if the key is equal to F
                     gs.undoMove() #undo the last move
+                    sqSelected = () #reset the user clicks
+                    pClicks = []
                     madeMove = True
         
         #every time we do a move, we need to updated the validMove with the current validMoves list
         #because it changes
         if madeMove:
-            validMove = gs.validMoves()
+            validMoves = gs.validMoves()
             madeMove = False        
         clock.tick(MAX_FPS)
         graphicInterface(screen, gs)      

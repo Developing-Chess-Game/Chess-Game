@@ -61,7 +61,37 @@ class GameState():
     
     #THIS GETS THE POSIBLES MOVES TO --PAWN-- PIECE
     def pawnMoves(self, r, c, moves):
-        pass
+        if self.whiteToMove: # white player's turn
+            if self.board[r-1][c] == "--": #If the square in front of the piece is empty add the move to moves
+                moves.append(Move((r, c), (r-1, c), self.board))
+                if r == 6 and self.board[r-2][c] == "--": #the pawns can move 2 squares in the first move     
+                    moves.append(Move((r, c), (r-2, c), self.board))
+
+            #PAWN CAPTURES
+            #pawn can capture to ether left or right by moving diagonally
+            if (c-1 >= 0): #Overpassing the left edge of the screen is not allow
+                if self.board[r-1][c-1][0] == 'b': #left capture
+                    moves.append(Move((r, c), (r-1, c-1), self.board))
+
+            if (c+1 <= 7): #we don't want to overpass the right edge of the screen 
+                if self.board[r-1][c+1][0] == 'b': #right capture
+                    moves.append(Move((r, c), (r-1, c+1), self.board))
+
+        else: #black player's turn
+            if self.board[r+1][c] == "--": #if the square in front of the piece is empty, add that move to moves  
+                moves.append(Move((r, c), (r+1, c), self.board))
+                if r == 1 and self.board[r+2][c] == "--": #the pawns can move 2 squares in the first move     
+                    moves.append(Move((r, c), (r+2, c), self.board))
+            
+            #PAWN CAPTURES
+            #pawn can capture to ether left or right by moving diagonally
+            if (c-1) >= 0: #overpassing the left edge is not allow
+                if self.board[r+1][c-1][0] == "w": #left capture
+                    moves.append(Move((r, c), (r+1, c-1), self.board))
+            
+            if (c+1) <= 7: #overpassing the right edge is not allow
+                if self.board[r+1][c+1][0] == "w": #right capture
+                    moves.append(Move((r, c), (r+1, c+1), self.board))
 
 
     #THIS GETS THE POSIBLES MOVES TO --ROOK-- PIECE
