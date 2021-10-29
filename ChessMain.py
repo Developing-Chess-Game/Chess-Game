@@ -87,6 +87,19 @@ def main():
                     sqSelected = () #reset the user clicks
                     pClicks = []
                     madeMove = True
+            
+            #Ending the game either Checkmate or Stalemate
+            #checkmate
+            if gs.checkmate:
+                print("--Black has won by Checkmate--") if gs.whiteToMove else print("--White has won by Checkmate--")
+                p.quit() #closing the program
+                sys.exit()
+            
+            #stalemate
+            if gs.stalemate:
+                print("--Game ended by Stalemate--")
+                p.quit()
+                sys.exit()
         
         #every time we do a move, we need to updated the validMove with the current validMoves list
         #because it changes
