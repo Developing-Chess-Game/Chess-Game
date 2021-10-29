@@ -34,6 +34,14 @@ class GameState():
         self.board[move.startRow][move.startCol] = "--" #the start move will be an empty square because the piece is moved
         self.board[move.endRow][move.endCol] = move.pieceMoved #we need to display the image in the new location
         self.moveLog.append(move) #we will use this movelog to keep track of all the move
+        #if a pawn piece arrive to the enemy's king's row it can become into a queen piece
+        if self.whiteToMove: #white pawns
+            if move.pieceMoved == "wP" and move.endRow == 0: #if the pawn arrive to the opposite king's row
+                self.board[move.endRow][move.endCol] = "wQ"  #it becomes itself into a Queen piece
+        else: #black's pawns
+            if move.pieceMoved == "bP" and move.endRow == 7: #if the pawn arrive to the opposite king's row
+                self.board[move.endRow][move.endCol] = "bQ" #it becomes itself into a Queen piece
+
         self.whiteToMove = not self.whiteToMove #switch turn between players
     
     #THIS METHOD WILL UNDO THE LAST MOVE
@@ -76,6 +84,7 @@ class GameState():
             if (c+1 <= 7): #we don't want to overpass the right edge of the screen 
                 if self.board[r-1][c+1][0] == 'b': #right capture
                     moves.append(Move((r, c), (r-1, c+1), self.board))
+            
 
         else: #black player's turn
             if self.board[r+1][c] == "--": #if the square in front of the piece is empty, add that move to moves  
