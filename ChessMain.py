@@ -11,6 +11,8 @@ SQ_SIZE = HEIGHT // DIMENTION
 ICON = p.image.load("icon.ico")
 MAX_FPS = 15
 IMAGES = {}
+#this will tell us when we must do a highlight on a selection
+HIGHLIGHT = False 
 
 """
 This help us to load the images in a less expensive way than loading every image in the same moment that they
@@ -43,6 +45,7 @@ def main():
     loadImg() #we need to call this once
     sqSelected = () #this will store the mouse location(x, y)
     pClicks = [] #this will be our player clicks, it will store 2 tuples: [(4, 4), (5, 3)] 
+    hClick = () #first click for highlights
 
     while True: #this will execute the game
         for event in p.event.get(): #we need to access to pygame.event
@@ -54,6 +57,8 @@ def main():
                 pos = p.mouse.get_pos() #getting the mouse position
                 col = pos[0] // SQ_SIZE #this is the column position
                 row = pos[1] // SQ_SIZE #this is the row position where the mouse is located
+                HIGHLIGHT = True
+                hClick = (row, col) #getting the position of the mouse on the first click
 
                 #if the user click 2 times on the piece's position we want to deselect
                 if sqSelected == (row, col): #this means the user clicked two times in the same piece
@@ -89,7 +94,12 @@ def main():
             validMoves = gs.validMoves()
             madeMove = False        
         clock.tick(MAX_FPS)
-        graphicInterface(screen, gs)      
+        graphicInterface(screen, gs)
+
+        #if pClicks at least have 1 element, it means that the first click has been made
+        if len(pClicks) > 0:
+            if HIGHLIGHT: #if high is true, we must draw the high light
+                highLinght(screen, (hClick[0] * SQ_SIZE), (hClick[1] * SQ_SIZE), gs.board) #Draw the highlight
         p.display.update()
 
 """
@@ -116,5 +126,15 @@ def drawPieces(screen, board):
             if piece != "--": #every time that it's not a empty square
                 #display the image in the screen
                 screen.blit(IMAGES[piece], p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE)) 
+
+#THIS METHOD DRAW THE HIGH LIGHT ON THE SELECTED SQUARE
+def highLinght(screen, r, c, board):
+    color = p.Color(47, 50, 72) # the color
+    row = r // SQ_SIZE #row 
+    col = c // SQ_SIZE #col
+    piece = board[row][col] #getting the piece on the board to load the image on the highlinght
+    if piece != "--": #if is not an empty square
+        p.draw.rect(screen, color, p.Rect(c, r, SQ_SIZE, SQ_SIZE)) #highlight
+        screen.blit(IMAGES[piece], p.Rect(c, r, SQ_SIZE, SQ_SIZE)) #image on the highlight
 
 main()
