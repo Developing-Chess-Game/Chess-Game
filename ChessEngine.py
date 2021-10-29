@@ -28,6 +28,12 @@ class GameState():
             "Q": self.queenMoves, "K": self.kingMoves, "P": self.pawnMoves}
         self.whiteToMove = True
         self.moveLog = []
+        #kings' location
+        self.wK = (7, 4) #white king's location
+        self.bK = (0, 4) #black king's location
+
+        self.checkmate = False
+        self.stalemate = False         
     
     #THIS METHOD WILL DO THE MOVE VISIBLE IN THE SCREEN
     def makeMove(self, move):
@@ -41,8 +47,13 @@ class GameState():
         else: #black's pawns
             if move.pieceMoved == "bP" and move.endRow == 7: #if the pawn arrive to the opposite king's row
                 self.board[move.endRow][move.endCol] = "bQ" #it becomes itself into a Queen piece
-
         self.whiteToMove = not self.whiteToMove #switch turn between players
+
+        #Update the king's location
+        if move.pieceMoved == "wK": #if white king was moved
+            self.wK = (move.endRow, move.endCol)
+        elif move.pieceMoved == "bK":#if black king was moved
+            self.bK = (move.endRow, move.endCol)
     
     #THIS METHOD WILL UNDO THE LAST MOVE
     def undoMove(self):
@@ -51,11 +62,56 @@ class GameState():
             self.board[move.startRow][move.startCol] = move.pieceMoved #setting the start Square to how it was before the move
             self.board[move.endRow][move.endCol] = move.pieceCaptured #setting end square to how it was before the move
             self.whiteToMove = not self.whiteToMove #switch the player's turn
+
+            #Update the king's location
+            if move.pieceMoved == "wK": #if white king part of a undo moved
+                self.wK = (move.startRow, move.startCol)
+            elif move.pieceMoved == "bK": #if white king part of a undo moved
+                self.bK = (move.startRow, move.startCol)
     
     #THIS WILL GET ALL THE VALID MOVES WITH CHECK(THE KING)
     def validMoves(self):
-        return self.allPosiblesMoves() #Generating all the posibles moves
+        #Getting all the posibles moves
+        moves = self.allPosiblesMoves()
+        #for each move in moves list, make the move
+        #we are going to delete elements from moves list, so we need to iterate it backwards to evoid bugs
+        for i in range(len(moves)-1,-1,-1):
+            self.makeMove(moves[i]) #making the move
+            self.whiteToMove = not self.whiteToMove #switching the turn back because the makeMove() method switch turns
+            #check if our king is in check
+            if self.inCheck():
+                moves.remove(moves[i])
+            self.whiteToMove = not self.whiteToMove #switching the turn 
+            self.undoMove()                         #to undo the move
+        
+        #checking if the king is in checkmate or the game will end with a stalemate
+        if len(moves) == 0:
+            if self.inCheck(): #if is in check, we want our checkmate variable to be True
+                self.checkmate = True
+            else: #else we want our stalemate variable to be True
+                self.stalemate = True
+
+        return moves
     
+    #THIS METHOD IS GOING TO RETURN TRUE OR FALSE, IT DEPENDS IF THE KING IS IN CHECK
+    def inCheck(self):
+        if self.whiteToMove: #white's turn 
+            return self.sqUnderAttack(self.wK[0], self.wK[1])
+        else: #black's turn
+            return self.sqUnderAttack(self.bK[0], self.bK[1])
+    
+    def sqUnderAttack(self, r, c):
+        self.whiteToMove = not self.whiteToMove #switching the turn to get the opposite moves
+        oppMoves = self.allPosiblesMoves() #opposite moves
+        self.whiteToMove = not self.whiteToMove #switching back
+
+        #we need to access to those moves
+        for move in oppMoves:
+            #if any oppMove attack our king, we need to return True, otherwise return False
+            if move.endRow == r and move.endCol == c:
+                return True
+        return False
+
     #THIS WILL GET ALL POSIBLES MOVE WITHOUT CHECK THE KING
     def allPosiblesMoves(self):
         moves = [] #It stores the posibles moves
